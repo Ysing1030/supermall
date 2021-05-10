@@ -1,6 +1,6 @@
 <template>
-  <div class="good-list-item">
-      <img :src="goodItem.show.img" alt="">
+  <div class="good-list-item" @click="goodsItemClick">
+      <img v-lazy="showImg(goodItem)" @load="imgLoaded">
       <div class="good-info">
           <p>{{goodItem.title}}</p>
           <span class="price">{{goodItem.price}}</span>
@@ -10,12 +10,29 @@
 </template>
 
 <script>
+
 export default {
     props:{
         goodItem:{
             type:Object,
             default(){
                 return {};
+            }
+        }
+    },
+    methods:{
+        imgLoaded(){    
+            this.$bus.$emit('imgLoaded');
+        },
+        goodsItemClick(){
+            // 点击跳转到商品详情
+           this.$router.push('detail/' + this.goodItem.iid)
+        },
+        showImg(goodItem){
+            if(goodItem.show){
+                return goodItem.show.img
+            }else{
+                return  goodItem.image;
             }
         }
     }

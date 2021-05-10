@@ -41,17 +41,25 @@ export default {
         
     },
     methods:{
-        // 回到顶部
-        backUp(x,y,time=500){
-            this.scroll.scrollTo(x,y,time);
+        // 回到指定位置
+        backUp(x,y,time = 500){
+            this.scroll && this.scroll.scrollTo(x,y,time);
         },
         // 下拉请求数据
         pullLoadData(){
             this.$emit('pullLoadData')
         },
-        // 完成一次下拉加载
+        // 一次下拉加载完成
         finishPullUp(){
-            this.scroll.finishPullUp();
+            this.scroll && this.scroll.finishPullUp();
+        },
+        // 完成图片加载
+        refresh(){
+            this.scroll && this.scroll.refresh();
+        },
+        // 获取到顶部的距离
+        getScrollY(){
+            return this.scroll ? this.scroll.y : 0
         }
     }
 }

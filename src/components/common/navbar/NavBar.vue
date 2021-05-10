@@ -1,8 +1,8 @@
 <template>
   <div class="navBar">
-      <div class="right"><slot name="left" /></div>
+      <div class="left"><slot name="left" /></div>
       <div class="center"><slot name="center" /></div>
-      <div class="left"><slot name="right" /></div>
+      <div class="right"><slot name="right" /></div>
   </div>
 </template>
 
@@ -18,7 +18,6 @@ export default {
         line-height: 44px;
         display: flex;
         text-align: center;
-        color: white;
         font-size: 16px;
     }
     .navBar .right{

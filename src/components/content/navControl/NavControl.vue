@@ -41,11 +41,11 @@ export default {
         height: 40px;
         line-height: 40px;
         font-size: 15px;
-
-        position: sticky;
-        top: 44px;
         background-color: #fff;
-        z-index: 9;
+
+       /*  position: sticky;
+        top: 44px;
+        z-index: 9; */
     }
     .nav-control .active{
         color: var(--color-tint);

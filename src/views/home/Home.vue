@@ -1,22 +1,31 @@
 <template>
 <div id="home">
-  <nav-bar class="homeNav"><div slot="center">购物街</div></nav-bar>
+  <nav-bar class="homeNav"><div slot="center">购物街</div></nav-bar> 
+  <nav-control 
+     :navList="['流行','新款','精选']"
+     @navClick="navClick"
+     class="navControl"
+     ref="navControl1"
+     v-show="isFixed"
+     ></nav-control>  
   <scroll 
     class="wrapper"
     :probeType="3"
     :pullUpLoad=true
     @scroll="scroll"
     @pullLoadData="pullLoadData"
-    ref="scrool"
+    ref="scroll"
     >
-     <home-swiper :homeBanner="homeBanner"></home-swiper>
+     <home-swiper :homeBanner="homeBanner" @swiperImgLoaded='swiperImgLoaded'></home-swiper>
      <home-recommond :homeRecmd="homeRecmd"></home-recommond>
      <home-feature></home-feature>
      <nav-control 
      :navList="['流行','新款','精选']"
      @navClick="navClick"
+     class="navControl"
+     ref="navControl2"
      ></nav-control>  
-     <good-list :goods="showGoods"></good-list>
+     <good-list :goods="showGoods" ></good-list>
   </scroll>
   <!-- 回到顶部 -->
   <back-up 
@@ -42,7 +51,9 @@
   import HomeFeature from "./homeChildCpn/HomeFeature"
   
   // home请求接口
-  import {getHomeMultiData,getHomeGoodsdata} from "network/home.js"
+  import { getHomeMultiData,getHomeGoodsdata } from "network/home.js"
+  // 第三方函数库
+  import { debounce } from "common/utills"
   export default {
     name: "Home",
     data(){
@@ -55,18 +66,22 @@
          'sell':{list:[],page:0}
        },
        curType:'pop',
-       isShowToUp:false
+       isShowToUp:false,
+       isFixed:false,
+       navControlOffsetTop:0,
+       leaveTopdis:0
       }
     },
     components: {
-     NavBar,
-     navControl,
-     goodList,
-     Scroll,
-     BackUp,
-     HomeSwiper,
-     HomeRecommond,
-     HomeFeature,
+      NavBar,
+      navControl,
+      goodList,
+      Scroll,
+      
+      BackUp,
+      HomeSwiper,
+      HomeRecommond,
+      HomeFeature,
     },
     computed:{
       showGoods(){
@@ -80,6 +95,24 @@
       this.getGooodList('pop');
       this.getGooodList('new');
       this.getGooodList('sell');
+    },
+    mounted(){
+      // 实现防抖
+      let refresh = debounce(this.$refs.scroll.refresh,200)
+      this.$bus.$on('imgLoaded',() => {
+        refresh()
+      })
+
+     /*  this.$bus.$on('imgLoaded',() => {
+        this.$refs.scroll.refresh();
+      }) */
+    },
+    activated(){
+      this.$refs.scroll.backUp(0,this.leaveTopdis,0)
+      this.$refs.scroll.refresh()
+    },
+    deactivated(){
+      this.leaveTopdis = this.$refs.scroll.getScrollY()
     },
     methods:{
       /**
@@ -97,9 +130,9 @@
           this.goods[type].list.push(...res.data.list);
           this.goods[type].page ++;
 
-          // this.$refs.scrool.finishPullUp();
-          this.$refs.scrool.finishPullUp()
-          // console.log(this.$refs.scrool);
+          // this.$refs.scroll.finishPullUp();
+          this.$refs.scroll.finishPullUp()
+          // console.log(this.$refs.scroll);
         })
        
       },
@@ -118,15 +151,22 @@
             this.curType = 'sell';
             break;
         }
+        this.$refs.navControl1.curIndex = index;
+        this.$refs.navControl2.curIndex = index;
       },
       scroll(positionY){
         this.isShowToUp = (-positionY) > 1000
+        this.isFixed = (-positionY) > this.navControlOffsetTop;
       },
       backUpClick(){
-        this.$refs.scrool.backUp(0,0)
+        this.$refs.scroll.backUp(0,0)
       },
       pullLoadData(){
         this.getGooodList(this.curType)
+      },
+      // 第一次轮播图高度出来，获取navControl的offsetTop
+      swiperImgLoaded(){
+        this.navControlOffsetTop = this.$refs.navControl2.$el.offsetTop;
       }
     }
   }
@@ -137,18 +177,25 @@
       height: 100vh;
       position: relative;
     }
-  .homeNav{
-    background-color: var(--color-tint);
-    position: sticky;
-    top: 0px;
-    z-index: 9;
-  }
-  .wrapper{
-    position: absolute;
-    top: 44px;
-    bottom: 49px;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-  }
+    .homeNav{
+      background-color: var(--color-tint);
+      position: sticky;
+      color: white;
+      top: 0px;
+      z-index: 9;
+    }
+    .wrapper{
+      position: absolute;
+      top: 44px;
+      bottom: 49px;
+      left: 0;
+      right: 0;
+      overflow: hidden;
+    }
+    .navControl{
+      position: sticky;
+      top: 44px;
+      z-index: 9;
+     
+    }
 </style>

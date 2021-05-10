@@ -4,7 +4,7 @@
             v-for="item in goods"
             :key="item.title"
             :goodItem=item
-        ></good-list-item>
+        ></good-list-item>  
     </div>
 </template>
 

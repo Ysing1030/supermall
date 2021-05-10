@@ -20,6 +20,6 @@ export default {
     height: 49px;
     background-color:#f6f6f6 ;
     box-shadow: 0px -1px 0.1px rgba(220, 220, 220, 0.5);
-    z-index: 999;
+    z-index: 100;
   }
 </style>

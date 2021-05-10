@@ -1,16 +1,12 @@
 <template>
-  <div>
-   <swiper>
+   <swiper id="swiper">
     <swiper-item 
-    v-for="item in homeBanner" 
-    :key="item.link"
+    v-for="item in topImages" 
+    :key="item"
     >
-      <a :href="item.title">
-        <img :src="item.image" @load="swiperImgLoaded">
-      </a>
+        <img :src="item">
     </swiper-item>
    </swiper>
-  </div>
 </template>
 
 <script>
@@ -22,7 +18,7 @@ export default {
       }
     },
     props:{
-      homeBanner:{
+      topImages:{
         type:Array,
         default(){
             return [];
@@ -34,16 +30,20 @@ export default {
      SwiperItem
     },
     methods:{
-      swiperImgLoaded(){
+    /*   swiperImgLoaded(){
         if(!this.swiperImgLoad){
           this.$emit('swiperImgLoaded')
         }
         this.swiperImgLoad = true;
-      }
-    }
+      } */
+    },
 }
 </script>
 
 <style scoped>
-
+    #swiper{
+        position: relative;
+        height: 300px;
+        overflow: hidden;
+    }
 </style>
