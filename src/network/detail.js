@@ -38,7 +38,7 @@ export class Goods {
       this.goodsCount = shopInfo.cGoods
     }
   }
-
+  
   
   export class GoodsParam {
     constructor(info, rule) {
